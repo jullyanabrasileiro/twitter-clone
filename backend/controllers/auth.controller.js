@@ -35,12 +35,23 @@ export const signup = async (req, res) => {
         if(newUser){
             generateTokenAndSetCookie(newUser._id, res)
             await newUser.save();
-        } else {
 
+            res.status(201).json({
+                _id: newUser._id,
+                fullName: newUser.username,
+                email: newUser.email,
+                followers: newUser.followers,
+                following: newUser.following,
+                profileImg: newUser.profileImg,
+                coverImg: newUser.coverImg,
+            })
+        } else {
+            res.status(400).json({ error: "Invalid user data"});
         }
 
     } catch (error) {
-
+        console.log("Error in signup controller", error.message);
+        res.status(500).json({ error: "Internal Serve Error"});
     }
 };
 
