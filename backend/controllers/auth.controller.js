@@ -1,23 +1,29 @@
-import User from "../models/user.model";
+import {generateTokenAndSetCookie } from "../lib/utils/generateTokes.js"
+import User from "../models/user.model.js";
 import bcrypt from 'bcryptjs';
 
 export const signup = async (req, res) => {
     try {
         const {fullName, username, email, password} = req.body;
 
-        const emailRegex = /^[^ \s@] +@[ ^\ s@] +\ . [^\ s@] +$/;
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        ;
         if (!emailRegex.test(email)) {
             return res.status(400).json({ error: "Invalid email format"});
         }
 
-        const existingUser = await User.findOne({ usernme });
+        const existingUser = await User.findOne({ username });
         if(existingUser) {
             return res.status(400).json({ error: "Username is already taken"});
         }
 
-        const existingEmail = await User.findOne({ usernme });
-        if(existingUser) {
+        const existingEmail = await User.findOne({ email });
+        if(existingEmail) {
             return res.status(400).json({ error: "Email is already taken"});
+        }
+
+        if (password.length < 6) {
+            return res.status(400).json({error: "Password must be at least 6 characters long"})
         }
 
         //hash password
@@ -44,7 +50,7 @@ export const signup = async (req, res) => {
                 following: newUser.following,
                 profileImg: newUser.profileImg,
                 coverImg: newUser.coverImg,
-            })
+            });
         } else {
             res.status(400).json({ error: "Invalid user data"});
         }
