@@ -1,4 +1,4 @@
-import {generateTokenAndSetCookie } from "../lib/utils/generateTokes.js"
+import {generateTokenAndSetCookie } from "../lib/utils/generateTokens.js"
 import User from "../models/user.model.js";
 import bcrypt from 'bcryptjs';
 
@@ -7,7 +7,7 @@ export const signup = async (req, res) => {
         const {fullName, username, email, password} = req.body;
 
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        ;
+
         if (!emailRegex.test(email)) {
             return res.status(400).json({ error: "Invalid email format"});
         }
@@ -36,15 +36,16 @@ export const signup = async (req, res) => {
             username,
             email,
             password: hashedPassword            
-        })
+        });
 
         if(newUser){
-            generateTokenAndSetCookie(newUser._id, res)
             await newUser.save();
+            generateTokenAndSetCookie(newUser._id, res);
 
             res.status(201).json({
                 _id: newUser._id,
-                fullName: newUser.username,
+                fullName: newUser.fullName,
+                username: newUser.username,
                 email: newUser.email,
                 followers: newUser.followers,
                 following: newUser.following,
