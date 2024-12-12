@@ -104,8 +104,10 @@ export const logout = async (req, res) => {
 
 export const getMe = async (req, res) => {
     try {
-        const user = await User.findById(req.user._id)
+        const user = await User.findById(req.user._id).select("-password");
+        res.status(200).json(user);
     } catch (error) {
-        
+        console.log("Error in getMe controller", err.message);
+        res.status(500).json({ error: "Intenral Server Error" });
     }
-}
+};
