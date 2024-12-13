@@ -4,7 +4,6 @@ import cookieParser from "cookie-parser";
 
 import authRoutes from "./routes/auth.routes.js";
 import connectMongoDB from "./db/connectMongoDB.js"
-import cookieParser from "cookie-parser";
 
 dotenv.config();
 
