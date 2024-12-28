@@ -119,6 +119,14 @@ export const updateUser = async (req, res) => {
             const salt = await bcrypt.genSalt(10);
             user.passowrd = await bcrypt.hash(newPassowrd, salt);
         }
+
+        if (profileImg) {
+
+        }
+
+        if (coverImg) {
+
+        }
     } catch (error) {
         
     }
