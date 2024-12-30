@@ -118,7 +118,7 @@ export const updateUser = async (req, res) => {
             }
 
             const salt = await bcrypt.genSalt(10);
-            user.passowrd = await bcrypt.hash(newPassowrd, salt);
+            user.passowrd = await bcrypt.hash(newPassword, salt);
         }
 
         if (profileImg) {
@@ -143,13 +143,13 @@ export const updateUser = async (req, res) => {
 
         user.fullName = fullName || user.fullName;
         user.email = email || user.email;
-        user.username = username || username || user.username;
+        user.username = username || user.username;
         user.bio = bio || user.bio;
         user.link = link || user.link;
         user.profileImg = profileImg || user.profileImg;
         user.coverImg = coverImg || user.coverImg;
 
-        user - await user.save();
+        user = await user.save();
 
         //passowrd should be null in the response
         user.password = null;
@@ -158,6 +158,7 @@ export const updateUser = async (req, res) => {
 
 
     } catch (error) {
-        
+        console.log("Error in updateUser: ", error.message);
+        res.status(500).json({ error: error.message });
     }
 };
