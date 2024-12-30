@@ -1,4 +1,5 @@
 import bcrypt from 'bcryptjs';
+import { v2 as cloudinary} from 'cloudinary';
 
 import User from "../models/user.model.js";
 import Notification from "../models/notification.model.js";
@@ -122,11 +123,40 @@ export const updateUser = async (req, res) => {
 
         if (profileImg) {
 
+            if(user.profileImg){
+                await cloudinary.uploader.destroy(user.profileImg.split("/").pop().split(".")[0]);
+            }
+
+            const uploadedResponse = await cloudinary.uploader.upload(profileImg);
+            profileImg = uploadedResponse.secure_url;
         }
 
         if (coverImg) {
+                        
+            if(user.coverImg){
+                await cloudinary.uploader.destroy(user.coverImg.split("/").pop().split(".")[0]);
+            }
 
+            const uploadedResponse = await cloudinary.uploader.upload(coverImg);
+            coverImg = uploadedResponse.secure_url;
         }
+
+        user.fullName = fullName || user.fullName;
+        user.email = email || user.email;
+        user.username = username || username || user.username;
+        user.bio = bio || user.bio;
+        user.link = link || user.link;
+        user.profileImg = profileImg || user.profileImg;
+        user.coverImg = coverImg || user.coverImg;
+
+        user - await user.save();
+
+        //passowrd should be null in the response
+        user.password = null;
+
+        return res.status(200).json(user);
+
+
     } catch (error) {
         
     }
