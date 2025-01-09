@@ -1,5 +1,6 @@
 import User from '../models/user.model.js';
-import Post from '../models/post.model.js'
+import Post from '../models/post.model.js';
+import { v2 as cloudinary } from 'cloudinary';
 
 export const createPost = async (req, res) => {
     try {
@@ -15,17 +16,22 @@ export const createPost = async (req, res) => {
             return res.status(400).json({message: "Post must have text or image"});
         }
 
+        if(img) {
+            const uploadeResponse = await cloudinary.uploader.upload(img);
+            img = uploadeResponse.secure_url;
+        }
+
         const newPost = new Post({
             user: userId,
             text,
-            img
-        })
+            img,
+        });
 
         await newPost.save();
         res.status(201).json(newPost);
 
     } catch (error) {
-        res.status(500).json({ error: err.message });
-        console.log(err);
+        res.status(500).json({ error: "Internal server error" });
+        console.log("Error in createPost controller: ", error);
     }
 }
