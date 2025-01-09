@@ -17,8 +17,12 @@ export const createPost = async (req, res) => {
         }
 
         if(img) {
-            const uploadeResponse = await cloudinary.uploader.upload(img);
-            img = uploadeResponse.secure_url;
+            try {
+                const uploadResponse = await cloudinary.uploader.upload(img);
+                img = uploadResponse.secure_url;
+            } catch (uploadError) {
+                return res.status(500).json({ error: "Failed to upload image" });
+            }
         }
 
         const newPost = new Post({
@@ -32,6 +36,6 @@ export const createPost = async (req, res) => {
 
     } catch (error) {
         res.status(500).json({ error: "Internal server error" });
-        console.log("Error in createPost controller: ", error);
+        console.log("Error in createPost controller: ", error.message);
     }
 }
