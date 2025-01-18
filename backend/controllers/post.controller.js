@@ -52,6 +52,13 @@ export const deletePost = async (req, res) => {
             return res.status(401).json( {error: "You are not authorized to delete this post"});
         }
 
+        if(post.img) {
+            const imgId = post.img.split("/").pop().split(".")[0];
+            await cloudinary.uploader.destroy(imgId);
+        }
+
+        await Post.findByIdAndDelete(req.params.id);
+
     } catch (error) {
         res.status(500).json({ error: "Internal server error" });
         console.log("Error in createPost controller: ", error.message);
