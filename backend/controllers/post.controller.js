@@ -66,3 +66,48 @@ export const deletePost = async (req, res) => {
         console.log("Error in createPost controller: ", error.message);
     }
 }
+
+export const commentOnPost = async (req, res) => {
+    try {
+        const { text } = req.body;
+        const postId = req.params.id;
+        const userId = req.user._id;
+
+        if (!text) {
+            return res.status(400).json({ error: "Text field is required" });
+        }
+
+        const post = await Post.findById(postId);
+
+        if (!post) {
+            return res.status(404).json({ error: "Post not found" });
+        }
+
+        const comment = { user: userId, text }
+
+        post.comments.push(comment);
+        await post.save();
+
+        res.status(200).json(post)
+
+    } catch (error) {
+        res.status(500).json({ error: "Internal server error" });
+        console.log("Error in createPost controller: ", error.message);
+    }
+}
+
+export const likeUnlikePost = async (req, res) => {
+    try {
+        const userId = req.user._id;
+        const {id:postId} = req.params;
+
+        const post = await Post.findById(postId);
+
+        if(!post){
+            return res.status(404).json({error: "Post not found"})
+        }
+    } catch (error) {
+        res.status(500).json({ error: "Internal server error" });
+        console.log("Error in createPost controller: ", error.message);
+    }
+}
