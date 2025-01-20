@@ -106,6 +106,27 @@ export const likeUnlikePost = async (req, res) => {
         if(!post){
             return res.status(404).json({error: "Post not found"})
         }
+
+        const userLikedPost = post.likes.includes(userId);
+
+        if(userLikedPost){
+            //unlike post
+            await Post.updateOne({_id:postId}, {$pull: {likes: userId}});
+            res.status(200).json({message: "Post unliked successfully"});
+        } else {
+            post.likes.push(userId);
+            await post.save();
+
+            const notification = new Notification({
+                from: userId,
+                to: post.user,
+                type: "like"
+            });
+            await notification.save();
+
+            res.status(200).json({message: "Post unliked successfully"});
+        }
+
     } catch (error) {
         res.status(500).json({ error: "Internal server error" });
         console.log("Error in createPost controller: ", error.message);
