@@ -132,3 +132,15 @@ export const likeUnlikePost = async (req, res) => {
         console.log("Error in createPost controller: ", error.message);
     }
 }
+
+export const getAllPosts = async (req, res) => {
+    try {
+
+
+        const userLikedPost = post.likes.includes(userId);
+
+    } catch (error) {
+        res.status(500).json({ error: "Internal server error" });
+        console.log("Error in createPost controller: ", error.message);
+    }
+}
