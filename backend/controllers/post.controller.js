@@ -135,12 +135,16 @@ export const likeUnlikePost = async (req, res) => {
 
 export const getAllPosts = async (req, res) => {
     try {
+        const post = await Post.find().sort({ createAt: -1});
 
+        if(posts.length === 0 ) {
+            return res.status(200).json([]);
+        }
 
-        const userLikedPost = post.likes.includes(userId);
+        res.status(200).json(posts);
 
     } catch (error) {
         res.status(500).json({ error: "Internal server error" });
-        console.log("Error in createPost controller: ", error.message);
+        console.log("Error in getAllPosts controller: ", error);
     }
 }
