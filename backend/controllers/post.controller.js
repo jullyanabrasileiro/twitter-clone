@@ -161,6 +161,8 @@ export const getAllPosts = async (req, res) => {
 }
 
 export const getLikedPosts = async (req, res) => {
+    const userId = req.params.id;
+    
     try {
 
         res.status(200).json(posts);
