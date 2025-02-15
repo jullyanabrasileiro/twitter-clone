@@ -205,3 +205,13 @@ export const getFollowingPosts = async (req, res) => {
         console.log("Error in getAllPosts controller: ", error);
     }
 }
+
+export const getUserPosts = async(req, res) => {
+    const username = req.params.username;
+
+    try {
+        
+    } catch (error) {
+        
+    }
+}
